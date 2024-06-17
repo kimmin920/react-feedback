@@ -1,3 +1,5 @@
+import '../../../public/registry/themes.css';
+
 export default function EditorLayout({
   children,
 }: Readonly<{
