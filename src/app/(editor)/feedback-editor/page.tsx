@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEventHandler, Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
 import Feedback, { FeedbackActionDesignType } from './components/feddback';
 
 import {
@@ -20,36 +20,31 @@ export default function FeedbackEditorPage() {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ResizablePanelGroup direction='horizontal' className='rounded-lg border'>
-        <ResizablePanel defaultSize={25} minSize={5}>
-          <div className='flex h-full items-center justify-center p-6'>
-            <RadioGroup
-              defaultValue='FACE'
-              onValueChange={onChangeActionDesign}
-            >
-              <div className='flex items-center space-x-2'>
-                <RadioGroupItem value='FACE' id='FACE' />
-                <Label htmlFor='FACE'>FACES</Label>
-              </div>
-              <div className='flex items-center space-x-2'>
-                <RadioGroupItem value='STAR' id='STAR' />
-                <Label htmlFor='STAR'>STARS</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={75}>
-          <div className='flex h-full items-center justify-center p-6'>
-            <Feedback
-              designConfig={{
-                actions: actionDesignType,
-              }}
-            />
-          </div>
-        </ResizablePanel>
-      </ResizablePanelGroup>
-    </Suspense>
+    <ResizablePanelGroup direction='horizontal' className='rounded-lg border'>
+      <ResizablePanel defaultSize={25} minSize={5}>
+        <div className='flex h-full items-center justify-center p-6'>
+          <RadioGroup defaultValue='FACE' onValueChange={onChangeActionDesign}>
+            <div className='flex items-center space-x-2'>
+              <RadioGroupItem value='FACE' id='FACE' />
+              <Label htmlFor='FACE'>FACES</Label>
+            </div>
+            <div className='flex items-center space-x-2'>
+              <RadioGroupItem value='STAR' id='STAR' />
+              <Label htmlFor='STAR'>STARS</Label>
+            </div>
+          </RadioGroup>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={75}>
+        <div className='flex h-full items-center justify-center p-6'>
+          <Feedback
+            designConfig={{
+              actions: actionDesignType,
+            }}
+          />
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
   );
 }

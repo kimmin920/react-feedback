@@ -1,3 +1,5 @@
+'use client';
+
 import React, { Fragment, ReactNode, useState } from 'react';
 import { Label } from '@/components/ui/label';
 import clsx from 'clsx';

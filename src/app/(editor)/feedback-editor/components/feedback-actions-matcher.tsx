@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import FeedbackActionsFaces from './feedback-actions-faces';
 import FeedbackActionsStars from './feedback-acions-stars';

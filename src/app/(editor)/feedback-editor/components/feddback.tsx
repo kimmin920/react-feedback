@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Popover,
   PopoverContent,
@@ -57,9 +57,13 @@ function Feedback({ designConfig }: FeedbackEditorType) {
     }
   };
 
+  useEffect(() => {
+    setIsPopoverOpen(true);
+  }, []);
+
   return (
     <div className='h-screen'>
-      <Popover open>
+      <Popover open={isPopoverOpen}>
         <PopoverTrigger asChild>
           <Button variant='outline'>Open popover</Button>
         </PopoverTrigger>

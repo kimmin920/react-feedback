@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ReactNode } from 'react';
 import { Label } from '@/components/ui/label';
 import clsx from 'clsx';
