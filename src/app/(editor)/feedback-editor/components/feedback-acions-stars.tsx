@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React, { Fragment, ReactNode, useState } from 'react';
-import { Label } from '@/components/ui/label';
-import clsx from 'clsx';
-import { Star } from 'lucide-react';
-import { useFormState } from 'react-dom';
-import { RadioGroup } from '@/components/ui/radio-group';
+import React, { Fragment, ReactNode, useState } from "react";
+import { Label } from "@/components/ui/label";
+import clsx from "clsx";
+import { Star } from "lucide-react";
+import { useFormState } from "react-dom";
+import { RadioGroup } from "@/components/ui/radio-group";
 
 function FeedbackActionsStars() {
   const [value, setValue] = useState(5);
@@ -18,13 +18,13 @@ function FeedbackActionsStars() {
 
   return (
     <RadioGroup onChange={onChange}>
-      <div className='flex'>
+      <div className="flex">
         <>
-          {['1', '2', '3', '4', '5'].map((each) => (
+          {["1", "2", "3", "4", "5"].map((each) => (
             <Fragment key={each}>
               <input
-                name='feedback-action'
-                type='radio'
+                name="feedback-action"
+                type="radio"
                 value={each}
                 id={each}
                 hidden
@@ -32,7 +32,9 @@ function FeedbackActionsStars() {
               <RadioLabel htmlFor={each}>
                 <Star
                   className={clsx(
-                    value >= Number(each) && 'fill-yellow-400 stroke-yellow-400'
+                    value >= Number(each) &&
+                      "fill-yellow-400 stroke-yellow-400",
+                    "stroke-1"
                   )}
                 />
               </RadioLabel>
@@ -57,7 +59,7 @@ function RadioLabel({
     <Label
       htmlFor={htmlFor}
       className={clsx(
-        'rounded-full w-[24px] h-[24px] p-0 text-zinc-500 hover:text-yellow-400 flex justify-center items-center hover:cursor-pointer',
+        "rounded-full w-[24px] h-[24px] p-0 text-zinc-500 hover:text-yellow-400 flex justify-center items-center hover:cursor-pointer",
         className
       )}
     >
