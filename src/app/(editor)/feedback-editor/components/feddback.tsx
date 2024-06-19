@@ -19,12 +19,17 @@ export type FeedbackEditorType = {
   designConfig: {
     actions: 'FACE' | 'STAR';
   };
+  customTexts: {
+    popupButtonTitle: string;
+    submitButtonTitle: string;
+    textAreaPlaceholder: string;
+  };
 };
 
 export type FeedbackActionDesignType =
   FeedbackEditorType['designConfig']['actions'];
 
-function Feedback({ designConfig }: FeedbackEditorType) {
+function Feedback({ designConfig, customTexts }: FeedbackEditorType) {
   const [status, setStatus] = useState<FormStatusType>('PENDING');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -66,7 +71,7 @@ function Feedback({ designConfig }: FeedbackEditorType) {
     <div className='h-screen'>
       <Popover open={isPopoverOpen}>
         <PopoverTrigger asChild>
-          <Button variant='outline'>Open popover</Button>
+          <Button variant='outline'>{customTexts.popupButtonTitle}</Button>
         </PopoverTrigger>
 
         <PopoverContent className='p-0 w-[340px] min-h-[197px] relative flex flex-col items-center justify-center'>
@@ -107,7 +112,7 @@ function Feedback({ designConfig }: FeedbackEditorType) {
               <div className='p-2'>
                 <Textarea
                   className='min-h-[100px] outline-none focus-visible:ring-transparent focus-visible:border-primary'
-                  placeholder='Your feedback...'
+                  placeholder={customTexts.textAreaPlaceholder}
                 />
               </div>
 
@@ -117,7 +122,7 @@ function Feedback({ designConfig }: FeedbackEditorType) {
                 <div className='flex space-x-2'>
                   <ScreenshotButton />
                   <Button type='submit' className='justify-self-end'>
-                    Submit
+                    {customTexts.submitButtonTitle}
                   </Button>
                 </div>
               </div>
