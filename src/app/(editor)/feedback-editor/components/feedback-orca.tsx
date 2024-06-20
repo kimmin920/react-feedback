@@ -12,7 +12,7 @@ import SuccessIcon from './success-icon';
 import FailIcon from './fail-icon';
 import FeedbackActionsMatcher from './feedback-actions-matcher';
 import ScreenshotButton from '@/components/screenshot-button';
-import { XIcon } from 'lucide-react';
+import { Delete, XIcon } from 'lucide-react';
 
 type FormStatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
@@ -70,6 +70,10 @@ function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
     setIsPopoverOpen(true);
   }, []);
 
+  const onClickFeedbackTypeButton = () => {
+    setStep(1);
+  };
+
   return (
     <div className='h-screen'>
       <Popover open={isPopoverOpen}>
@@ -116,13 +120,25 @@ function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
                 </Button>
               </div>
               <div className='flex flex-row items-center flex-1'>
-                <Button className='flex-1 h-full' variant='ghost' size='icon'>
+                <Button
+                  className='flex-1'
+                  variant='ghost'
+                  onClick={onClickFeedbackTypeButton}
+                >
                   <XIcon />
                 </Button>
-                <Button className='flex-1' variant='ghost' size='icon'>
+                <Button
+                  className='flex-1'
+                  variant='ghost'
+                  onClick={onClickFeedbackTypeButton}
+                >
                   <XIcon />
                 </Button>
-                <Button className='flex-1' variant='ghost' size='icon'>
+                <Button
+                  className='flex-1'
+                  variant='ghost'
+                  onClick={onClickFeedbackTypeButton}
+                >
                   <XIcon />
                 </Button>
               </div>
@@ -134,6 +150,11 @@ function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
               className='w-full flex-1 space-y-3 grid'
               onSubmit={handleSubmit}
             >
+              <div>
+                <Button>
+                  <Delete onClick={() => setStep(0)} />
+                </Button>
+              </div>
               <div className='p-2'>
                 <Textarea
                   className='min-h-[100px] outline-none focus-visible:ring-transparent focus-visible:border-primary'
