@@ -21,6 +21,15 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import FeedbackOrca from './components/feedback-orca';
+
 // Define the schema using zod
 const formSchema = z.object({
   popupButtonTitle: z.string().min(1, 'Popup Button Title is required'),
@@ -50,6 +59,11 @@ export default function FeedbackEditorPage() {
     watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      popupButtonTitle: 'Open feedback',
+      submitButtonTitle: 'Submit',
+      textAreaPlaceholder: 'Your feedback please...',
+    },
   });
 
   const onSubmit = (data: FormData) => {
@@ -59,11 +73,29 @@ export default function FeedbackEditorPage() {
   const popupButtonTitle = watch('popupButtonTitle');
   const textAreaPlaceholder = watch('textAreaPlaceholder');
   const submitButtonTitle = watch('submitButtonTitle');
+  const [design, setDesign] = useState<'ORCA' | 'HUMPBACK'>('ORCA');
+
+  const onChangeDesign = (value: 'ORCA' | 'HUMPBACK') => {
+    setDesign(value);
+  };
 
   return (
     <ResizablePanelGroup direction='horizontal' className='rounded-lg border'>
       <ResizablePanel defaultSize={25} minSize={5}>
         <ThemeWrapper>
+          <div className='p-6'>
+            <Select onValueChange={onChangeDesign} value={design}>
+              <SelectTrigger>
+                <SelectValue placeholder='Select a verified email to display' />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value='ORCA'>Orca</SelectItem>
+                <SelectItem value='HUMPBACK'>Humpback</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <form
             onSubmit={handleSubmit(onSubmit)}
             className='flex flex-col h-full items-center justify-center space-y-5 p-6'
@@ -139,16 +171,31 @@ export default function FeedbackEditorPage() {
       >
         <ThemeWrapper>
           <div className='flex h-full items-center justify-center p-6'>
-            <Feedback
-              designConfig={{
-                actions: actionDesignType,
-              }}
-              customTexts={{
-                popupButtonTitle,
-                submitButtonTitle,
-                textAreaPlaceholder,
-              }}
-            />
+            {design === 'HUMPBACK' && (
+              <Feedback
+                designConfig={{
+                  actions: actionDesignType,
+                }}
+                customTexts={{
+                  popupButtonTitle,
+                  submitButtonTitle,
+                  textAreaPlaceholder,
+                }}
+              />
+            )}
+
+            {design === 'ORCA' && (
+              <FeedbackOrca
+                designConfig={{
+                  actions: actionDesignType,
+                }}
+                customTexts={{
+                  popupButtonTitle,
+                  submitButtonTitle,
+                  textAreaPlaceholder,
+                }}
+              />
+            )}
           </div>
         </ThemeWrapper>
       </ResizablePanel>
