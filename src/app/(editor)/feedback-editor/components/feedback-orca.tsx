@@ -12,7 +12,15 @@ import SuccessIcon from './success-icon';
 import FailIcon from './fail-icon';
 import FeedbackActionsMatcher from './feedback-actions-matcher';
 import ScreenshotButton from '@/components/screenshot-button';
-import { Delete, XIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  Delete,
+  LightbulbIcon,
+  MessageCircleIcon,
+  MessageCircleMoreIcon,
+  TriangleAlertIcon,
+  XIcon,
+} from 'lucide-react';
 
 type FormStatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
@@ -32,6 +40,7 @@ export type FeedbackActionDesignType =
 
 function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
   const [step, setStep] = useState(0);
+  const [headerTitle, setHeaderTitle] = useState('');
 
   const [status, setStatus] = useState<FormStatusType>('PENDING');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -70,8 +79,20 @@ function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
     setIsPopoverOpen(true);
   }, []);
 
-  const onClickFeedbackTypeButton = () => {
+  const onClickFeedbackTypeButton = (type: number) => {
     setStep(1);
+
+    if (type === 0) {
+      setHeaderTitle('Report an issue');
+    }
+
+    if (type === 1) {
+      setHeaderTitle('Share an idea');
+    }
+
+    if (type === 2) {
+      setHeaderTitle('Tell us anything');
+    }
   };
 
   return (
@@ -112,34 +133,39 @@ function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
           )}
 
           {status === 'PENDING' && step === 0 && (
-            <div className='w-full flex-1 flex flex-col'>
-              <div className='flex flex-row items-center justify-center'>
+            <div className='w-full flex-1 flex flex-col p-3 gap-y-3'>
+              <div className='relative flex flex-row items-center justify-center'>
                 What's on your mind?
-                <Button variant='ghost' size='icon'>
-                  <XIcon />
-                </Button>
+                <XIcon
+                  size={16}
+                  className='absolute right-0 cursor-pointer'
+                  color='grey'
+                />
               </div>
-              <div className='flex flex-row items-center flex-1'>
+              <div className='items-center grid grid-cols-3 gap-2'>
                 <Button
-                  className='flex-1'
-                  variant='ghost'
-                  onClick={onClickFeedbackTypeButton}
+                  className='flex-1 h-[150px] flex flex-col gap-y-3'
+                  variant='outline'
+                  onClick={() => onClickFeedbackTypeButton(0)}
                 >
-                  <XIcon />
+                  <TriangleAlertIcon size={40} />
+                  Issue
                 </Button>
                 <Button
-                  className='flex-1'
-                  variant='ghost'
-                  onClick={onClickFeedbackTypeButton}
+                  className='flex-1 h-[150px] flex flex-col gap-y-3'
+                  variant='outline'
+                  onClick={() => onClickFeedbackTypeButton(1)}
                 >
-                  <XIcon />
+                  <LightbulbIcon size={40} />
+                  Idea
                 </Button>
                 <Button
-                  className='flex-1'
-                  variant='ghost'
-                  onClick={onClickFeedbackTypeButton}
+                  className='flex-1 h-[150px] flex flex-col gap-y-3'
+                  variant='outline'
+                  onClick={() => onClickFeedbackTypeButton(2)}
                 >
-                  <XIcon />
+                  <MessageCircleMoreIcon size={40} />
+                  Other
                 </Button>
               </div>
             </div>
@@ -147,14 +173,25 @@ function FeedbackOrca({ designConfig, customTexts }: FeedbackEditorType) {
 
           {status === 'PENDING' && step === 1 && (
             <form
-              className='w-full flex-1 space-y-3 grid'
+              className='w-full flex-1 space-y-1 grid'
               onSubmit={handleSubmit}
             >
-              <div>
-                <Button>
-                  <Delete onClick={() => setStep(0)} />
-                </Button>
-              </div>
+              <header className='p-2 pb-0 relative'>
+                <div className='text-center relative'>
+                  <ArrowLeftIcon
+                    size={16}
+                    className='stroke-gray-400 absolute left-0 top-1/2 -translate-y-1/2 cursor-pointer'
+                    onClick={() => setStep(0)}
+                  />
+                  <XIcon
+                    size={16}
+                    className='stroke-gray-400 absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer'
+                    onClick={() => setStep(0)}
+                  />
+
+                  {headerTitle}
+                </div>
+              </header>
               <div className='p-2'>
                 <Textarea
                   className='min-h-[100px] outline-none focus-visible:ring-transparent focus-visible:border-primary'

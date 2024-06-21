@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from './ui/button';
-import { Camera, LoaderCircle, XIcon } from 'lucide-react';
+import { Camera, CircleAlert, LoaderCircle, XIcon } from 'lucide-react';
 import Image from 'next/image';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@utils/supabase/client';
@@ -54,6 +54,7 @@ function ScreenshotButton() {
 
       setStatus('SUCCESS');
     } catch (error) {
+      console.error(error);
       setStatus('FAILED');
     }
   };
@@ -90,6 +91,7 @@ function ScreenshotButton() {
     <Button type='button' size='icon' onClick={takeScreenshot}>
       {status === 'LOADING' ? <LoaderCircle className='animate-spin' /> : <></>}
       {status === 'PENDING' ? <Camera size='16' /> : <></>}
+      {status === 'FAILED' ? <CircleAlert size='16' /> : <></>}
     </Button>
   );
 }
