@@ -3,6 +3,7 @@ import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 
 import Header from '../components/ui/header';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang='en'>
       <body className='sticky top-0 bg-background text-foreground'>
         {/* <Header /> */}
-        <main className='flex flex-col items-center'>{children}</main>
+        <TooltipProvider>
+          <main className='flex flex-col items-center'>{children}</main>
+        </TooltipProvider>
       </body>
     </html>
   );
