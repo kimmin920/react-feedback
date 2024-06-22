@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -59,8 +61,133 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import FeedbackItem from './components/feedback-item';
+import { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import path from 'path';
+
+const FEEDBACK_MOCKS = [
+  {
+    id: '1',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'The page layout breaks on mobile devices.',
+    type: 'ISSUE',
+    page: '/home',
+    device: 'iPhone 12',
+    createdAt: '2024-06-20T08:30:00Z',
+  },
+  {
+    id: '2',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'Great user experience on the new feature!',
+    type: 'ISSUE',
+    page: '/features',
+    device: 'Samsung Galaxy S21',
+    createdAt: '2024-06-19T10:45:00Z',
+  },
+  {
+    id: '3',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'The color scheme is difficult to read.',
+    type: 'OTHER',
+    page: '/contact',
+    device: 'Google Pixel 6',
+    createdAt: '2024-06-18T12:20:00Z',
+  },
+  {
+    id: '4',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'I love the new dashboard design!',
+    type: 'IDEA',
+    page: '/dashboard',
+    device: 'iPad Pro',
+    createdAt: '2024-06-17T14:35:00Z',
+  },
+  {
+    id: '5',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'The search function is not working properly.',
+    type: 'OTHER',
+    page: '/search',
+    device: 'iPhone SE',
+    createdAt: '2024-06-16T09:15:00Z',
+  },
+  {
+    id: '6',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'It would be great to have a dark mode option.',
+    type: 'IDEA',
+    page: '/settings',
+    device: 'OnePlus 9',
+    createdAt: '2024-06-15T16:50:00Z',
+  },
+  {
+    id: '7',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'The form validation messages are not clear.',
+    type: 'ISSUE',
+    page: '/signup',
+    device: 'MacBook Pro',
+    createdAt: '2024-06-14T11:25:00Z',
+  },
+  {
+    id: '8',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'Fantastic customer support!',
+    type: 'OTHER',
+    page: '/support',
+    device: 'Surface Pro',
+    createdAt: '2024-06-13T13:40:00Z',
+  },
+  {
+    id: '9',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'The images take too long to load.',
+    type: 'ISSUE',
+    page: '/gallery',
+    device: 'Samsung Galaxy Tab S7',
+    createdAt: '2024-06-12T07:55:00Z',
+  },
+  {
+    id: '10',
+    screenshotSrc:
+      'https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    text: 'Could you add more payment options?',
+    type: 'IDEA',
+    page: '/checkout',
+    device: 'iPhone 13',
+    createdAt: '2024-06-11T18:05:00Z',
+  },
+];
 
 function DashboardPage() {
+  const [tab, setTab] = useState('all');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const onTabChange = (value: string) => {
+    setTab(value);
+
+    router.replace(pathname + `?tab=${value}`);
+  };
+
+  const search = searchParams.get('tab');
+
+  const feedbacks =
+    search === 'all'
+      ? FEEDBACK_MOCKS
+      : FEEDBACK_MOCKS.filter((each) => each.type === search?.toUpperCase());
+
   return (
     <div className='flex min-h-screen w-full flex-col bg-muted/40'>
       <aside className='fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex'>
@@ -238,13 +365,13 @@ function DashboardPage() {
                 size='icon'
                 className='overflow-hidden rounded-full'
               >
-                {/* <Image
+                <Image
                   src='https://plus.unsplash.com/premium_photo-1680740103993-21639956f3f0?q=80&w=388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                   width={36}
                   height={36}
                   alt='Avatar'
                   className='overflow-hidden rounded-full'
-                /> */}
+                />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
@@ -258,12 +385,13 @@ function DashboardPage() {
           </DropdownMenu>
         </header>
         <main className='grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8'>
-          <Tabs defaultValue='all'>
+          <Tabs defaultValue='all' onValueChange={onTabChange}>
             <div className='flex items-center'>
               <TabsList>
                 <TabsTrigger value='all'>All</TabsTrigger>
-                <TabsTrigger value='active'>Active</TabsTrigger>
-                <TabsTrigger value='draft'>Draft</TabsTrigger>
+                <TabsTrigger value='issue'>Issue</TabsTrigger>
+                <TabsTrigger value='idea'>Idea</TabsTrigger>
+                <TabsTrigger value='other'>Other</TabsTrigger>
                 <TabsTrigger value='archived' className='hidden sm:flex'>
                   Archived
                 </TabsTrigger>
@@ -282,9 +410,10 @@ function DashboardPage() {
                     <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuCheckboxItem checked>
-                      Active
+                      Issue
                     </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>Idea</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>Other</DropdownMenuCheckboxItem>
                     <DropdownMenuCheckboxItem>
                       Archived
                     </DropdownMenuCheckboxItem>
@@ -304,13 +433,12 @@ function DashboardPage() {
                 </Button>
               </div>
             </div>
-            <TabsContent value='all'>
+
+            <TabsContent value={tab}>
               <Card x-chunk='dashboard-06-chunk-0'>
                 <CardHeader>
-                  <CardTitle>Products</CardTitle>
-                  <CardDescription>
-                    Manage your products and view their sales performance.
-                  </CardDescription>
+                  <CardTitle>Feedbacks</CardTitle>
+                  <CardDescription>Manage your feedbacks.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
@@ -321,9 +449,9 @@ function DashboardPage() {
                         </TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Price</TableHead>
+                        <TableHead>Page</TableHead>
                         <TableHead className='hidden md:table-cell'>
-                          Total Sales
+                          Device
                         </TableHead>
                         <TableHead className='hidden md:table-cell'>
                           Created at
@@ -334,264 +462,17 @@ function DashboardPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
-                        <TableCell className='hidden sm:table-cell'>
-                          <Image
-                            alt='Product image'
-                            className='aspect-square rounded-md object-cover'
-                            height='64'
-                            src=''
-                            width='64'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          Laser Lemonade Machine
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant='outline'>Draft</Badge>
-                        </TableCell>
-                        <TableCell>$499.99</TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          25
-                        </TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          2023-07-12 10:42 AM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <MoreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='hidden sm:table-cell'>
-                          <Image
-                            alt='Product image'
-                            className='aspect-square rounded-md object-cover'
-                            height='64'
-                            src=''
-                            width='64'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          Hypernova Headphones
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant='outline'>Active</Badge>
-                        </TableCell>
-                        <TableCell>$129.99</TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          100
-                        </TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          2023-10-18 03:21 PM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <MoreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='hidden sm:table-cell'>
-                          <Image
-                            alt='Product image'
-                            className='aspect-square rounded-md object-cover'
-                            height='64'
-                            src=''
-                            width='64'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          AeroGlow Desk Lamp
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant='outline'>Active</Badge>
-                        </TableCell>
-                        <TableCell>$39.99</TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          50
-                        </TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          2023-11-29 08:15 AM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <MoreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='hidden sm:table-cell'>
-                          <Image
-                            alt='Product image'
-                            className='aspect-square rounded-md object-cover'
-                            height='64'
-                            src=''
-                            width='64'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          TechTonic Energy Drink
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant='secondary'>Draft</Badge>
-                        </TableCell>
-                        <TableCell>$2.99</TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          0
-                        </TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          2023-12-25 11:59 PM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <MoreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='hidden sm:table-cell'>
-                          <Image
-                            alt='Product image'
-                            className='aspect-square rounded-md object-cover'
-                            height='64'
-                            src=''
-                            width='64'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          Gamer Gear Pro Controller
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant='outline'>Active</Badge>
-                        </TableCell>
-                        <TableCell>$59.99</TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          75
-                        </TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          2024-01-01 12:00 AM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <MoreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className='hidden sm:table-cell'>
-                          <Image
-                            alt='Product image'
-                            className='aspect-square rounded-md object-cover'
-                            height='64'
-                            src=''
-                            width='64'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          Luminous VR Headset
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant='outline'>Active</Badge>
-                        </TableCell>
-                        <TableCell>$199.99</TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          30
-                        </TableCell>
-                        <TableCell className='hidden md:table-cell'>
-                          2024-02-14 02:14 PM
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup='true'
-                                size='icon'
-                                variant='ghost'
-                              >
-                                <MoreHorizontal className='h-4 w-4' />
-                                <span className='sr-only'>Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>Edit</DropdownMenuItem>
-                              <DropdownMenuItem>Delete</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
+                      {feedbacks.map((feedback) => (
+                        <FeedbackItem
+                          key={feedback.id}
+                          screenshotSrc={feedback.screenshotSrc}
+                          text={feedback.text}
+                          type={feedback.type}
+                          page={feedback.page}
+                          device={feedback.device}
+                          createdAt={feedback.createdAt}
+                        />
+                      ))}
                     </TableBody>
                   </Table>
                 </CardContent>
