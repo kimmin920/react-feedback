@@ -6,12 +6,13 @@ import { Separator } from '@/components/ui/separator';
 import { UserMetadata } from '@/app/profile/page';
 import { User } from '@supabase/supabase-js';
 import { createClient } from '@utils/supabase/server';
+import { redirect } from 'next/navigation';
 
 async function getProjects() {
   const supabase = createClient();
 
   const { data, error } = await supabase.from('projects').select();
-  console.log(data);
+
   return data;
 }
 async function Header({ user }: { user: User }) {

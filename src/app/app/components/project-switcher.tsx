@@ -44,7 +44,12 @@ import {
 } from '@/components/ui/select';
 import { createClient } from '@utils/supabase/client';
 import { revalidatePath } from 'next/cache';
-import { useRouter } from 'next/navigation';
+import {
+  redirect,
+  useParams,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
 
 type Project = {
   name: string;
@@ -68,19 +73,22 @@ export default function ProjectSwitcher({
   className,
 }: TeamSwitcherProps) {
   const router = useRouter();
+  const params = useParams();
+
+  const projectId = params.projectId;
+
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
+
   const [selectedProject, setSelectedProject] = React.useState<Project>(
-    projects[0]
+    projects.find((pj) => pj.id === projectId)!
   );
 
-  const supabase = createClient();
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  async function createProject(formData: FormData) {
+    const supabase = createClient();
 
     const projectName = formData.get('project-name');
+    const userId = formData.get('user-id');
 
     const { data, error } = await supabase
       .from('projects')
@@ -88,9 +96,15 @@ export default function ProjectSwitcher({
       .select();
 
     if (data) {
+      router.push(`/app?projectId=${data[0].id}`);
       router.refresh();
+
+      setSelectedProject({
+        name: data[0].name,
+        id: data[0].id,
+      });
     }
-  };
+  }
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -103,16 +117,22 @@ export default function ProjectSwitcher({
             aria-label='Select a team'
             className={cn('w-[200px] justify-between', className)}
           >
-            <Avatar className='mr-2 h-5 w-5'>
-              <AvatarImage
-                src={`https://avatar.vercel.sh/${selectedProject.id}.png`}
-                alt={selectedProject.name}
-                className='grayscale'
-              />
-              <AvatarFallback>SC</AvatarFallback>
-            </Avatar>
-            {selectedProject.name}
-            <CaretSortIcon className='ml-auto h-4 w-4 shrink-0 opacity-50' />
+            {selectedProject ? (
+              <>
+                <Avatar className='mr-2 h-5 w-5'>
+                  <AvatarImage
+                    src={`https://avatar.vercel.sh/${selectedProject.id}.png`}
+                    alt={selectedProject.name}
+                    className='grayscale'
+                  />
+                  <AvatarFallback>SC</AvatarFallback>
+                </Avatar>
+                {selectedProject.name}
+                <CaretSortIcon className='ml-auto h-4 w-4 shrink-0 opacity-50' />
+              </>
+            ) : (
+              <>⭐️ Create New Project ⭐️</>
+            )}
           </Button>
         </PopoverTrigger>
 
@@ -120,34 +140,36 @@ export default function ProjectSwitcher({
           <Command>
             <CommandList>
               <CommandGroup>
-                {projects.map((group) => (
-                  <CommandItem
-                    key={group.id}
-                    onSelect={() => {
-                      setSelectedProject(group);
-                      setOpen(false);
-                    }}
-                    className='text-sm'
-                  >
-                    <Avatar className='mr-2 h-5 w-5'>
-                      <AvatarImage
-                        src={`https://avatar.vercel.sh/${group.id}.png`}
-                        alt={group.name}
-                        className='grayscale'
+                {projects.length > 0 &&
+                  projects.map((group) => (
+                    <CommandItem
+                      key={group.id}
+                      onSelect={() => {
+                        setSelectedProject(group);
+                        setOpen(false);
+                        router.push(`/app/${group.id}`);
+                      }}
+                      className='text-sm'
+                    >
+                      <Avatar className='mr-2 h-5 w-5'>
+                        <AvatarImage
+                          src={`https://avatar.vercel.sh/${group.id}.png`}
+                          alt={group.name}
+                          className='grayscale'
+                        />
+                        <AvatarFallback>SC</AvatarFallback>
+                      </Avatar>
+                      {group.name}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          selectedProject.id === group.id
+                            ? 'opacity-100'
+                            : 'opacity-0'
+                        )}
                       />
-                      <AvatarFallback>SC</AvatarFallback>
-                    </Avatar>
-                    {group.name}
-                    <CheckIcon
-                      className={cn(
-                        'ml-auto h-4 w-4',
-                        selectedProject.id === group.id
-                          ? 'opacity-100'
-                          : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             </CommandList>
             <CommandSeparator />
@@ -170,7 +192,7 @@ export default function ProjectSwitcher({
         </PopoverContent>
       </Popover>
       <DialogContent>
-        <form onSubmit={onSubmit}>
+        <form action={createProject}>
           <DialogHeader>
             <DialogTitle>Create Project</DialogTitle>
             <DialogDescription>
@@ -180,6 +202,7 @@ export default function ProjectSwitcher({
           <div>
             <div className='space-y-4 py-2 pb-4'>
               <div className='space-y-2'>
+                <input hidden name='user-id' value={userId} />
                 <Label htmlFor='project-name'>Project name</Label>
                 <Input
                   id='project-name'
@@ -191,12 +214,15 @@ export default function ProjectSwitcher({
           </div>
           <DialogFooter>
             <Button
+              type='button'
               variant='outline'
               onClick={() => setShowNewTeamDialog(false)}
             >
               Cancel
             </Button>
-            <Button type='submit'>Continue</Button>
+            <Button type='submit' onClick={() => setShowNewTeamDialog(false)}>
+              Continue
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
