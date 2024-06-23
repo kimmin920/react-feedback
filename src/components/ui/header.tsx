@@ -6,6 +6,7 @@ import { Button } from './button';
 import { signOut } from '@/app/login/actions';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ComboBoxResponsive } from './combobox-responsive';
 
 const prisma = new PrismaClient();
 
@@ -23,6 +24,7 @@ async function Header() {
           <a className='mr-6 flex items-center space-x-2' href='/'>
             <span className='font-bold'>my-app</span>
           </a>
+          <ComboBoxResponsive />
           <Link href='/'>main</Link>
         </nav>
         <div className='flex flex-1 items-center justify-end space-x-2'>
