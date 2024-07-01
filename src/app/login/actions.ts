@@ -1,11 +1,13 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@utils/supabase/server';
 import { Provider } from '@supabase/supabase-js';
 import { getURL } from '@utils/helpers';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function oAuthSignIn(provider: Provider) {
   if (!provider) {

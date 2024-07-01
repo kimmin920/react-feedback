@@ -1,6 +1,9 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { type CookieOptions, createServerClient } from '@supabase/ssr';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -27,7 +30,31 @@ export async function GET(request: Request) {
         },
       }
     );
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (data.user) {
+      await prisma.user.upsert({
+        where: {
+          email: data.user.email,
+        },
+        create: {
+          name: data.user.user_metadata.name,
+          fullName: data.user.user_metadata.full_name,
+          email: data.user.email!,
+          avatarUrl: data.user.user_metadata.avatar_url,
+          authUID: data.user.id,
+        },
+        update: {
+          name: data.user.user_metadata.name,
+          fullName: data.user.user_metadata.full_name,
+          email: data.user.email!,
+          avatarUrl: data.user.user_metadata.avatar_url,
+          authUID: data.user.id,
+        },
+      });
+    }
+
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
     }
