@@ -5,18 +5,13 @@ import { Separator } from '@/components/ui/separator';
 
 import { UserMetadata } from '@/app/profile/page';
 import { User } from '@supabase/supabase-js';
-import { createClient } from '@utils/supabase/server';
-import { redirect } from 'next/navigation';
+import { PrismaClient } from '@prisma/client';
+import { redirect } from 'next/dist/server/api-utils';
+import { getProjects } from '../actions';
 
-async function getProjects() {
-  const supabase = createClient();
-
-  const { data, error } = await supabase.from('projects').select();
-
-  return data;
-}
 async function Header({ user }: { user: User }) {
-  const projects = await getProjects();
+  const projects = await getProjects(user.id);
+
   const userMetadata = user.user_metadata as UserMetadata;
 
   return (

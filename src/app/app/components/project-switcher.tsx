@@ -50,6 +50,7 @@ import {
   useRouter,
   useSearchParams,
 } from 'next/navigation';
+import { insertProject } from '../actions';
 
 type Project = {
   name: string;
@@ -80,31 +81,23 @@ export default function ProjectSwitcher({
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
-  const [selectedProject, setSelectedProject] = React.useState<Project>(
-    projects.find((pj) => pj.id === projectId)!
+  const [selectedProject, setSelectedProject] = React.useState<Project | null>(
+    () => projects?.find((pj) => pj.id === projectId) ?? null
   );
 
-  async function createProject(formData: FormData) {
-    const supabase = createClient();
-
-    const projectName = formData.get('project-name');
-    const userId = formData.get('user-id');
-
-    const { data, error } = await supabase
-      .from('projects')
-      .insert([{ name: projectName, user_id: userId }])
-      .select();
-
-    if (data) {
-      router.push(`/app?projectId=${data[0].id}`);
-      router.refresh();
-
-      setSelectedProject({
-        name: data[0].name,
-        id: data[0].id,
-      });
+  React.useEffect(() => {
+    if (projects.length === 0) {
+      return;
     }
-  }
+
+    const project = projects.find((pj) => pj.id === projectId);
+
+    if (!project) {
+      return;
+    }
+
+    setSelectedProject(project);
+  }, [projects, projectId]);
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -163,7 +156,7 @@ export default function ProjectSwitcher({
                       <CheckIcon
                         className={cn(
                           'ml-auto h-4 w-4',
-                          selectedProject.id === group.id
+                          selectedProject?.id === group.id
                             ? 'opacity-100'
                             : 'opacity-0'
                         )}
@@ -192,7 +185,7 @@ export default function ProjectSwitcher({
         </PopoverContent>
       </Popover>
       <DialogContent>
-        <form action={createProject}>
+        <form action={insertProject}>
           <DialogHeader>
             <DialogTitle>Create Project</DialogTitle>
             <DialogDescription>

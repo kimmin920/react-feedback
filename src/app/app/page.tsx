@@ -1,31 +1,26 @@
+import { PrismaClient } from '@prisma/client';
 import { createClient } from '@utils/supabase/server';
 import { redirect } from 'next/navigation';
 import React from 'react';
+import { getProjects } from './actions';
 
-async function getProjects(id?: string) {
+async function getProjectsFromApp(projectId?: string) {
   const supabase = createClient();
 
-  const { data, error } = await supabase.from('projects').select();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (data && data.length > 0) {
-    if (id) {
-      redirect(`app/${id}`);
-    }
+  const projects = await getProjects(user!.id);
 
-    redirect(`app/${data[0].id}`);
+  if (!projectId && projects.length > 0) {
+    const firstProjectId = projects[0].id;
+    redirect(`app/${firstProjectId}`);
   }
-
-  return data;
 }
 
-async function AppPage({
-  params,
-  searchParams,
-}: {
-  params: { slug: string };
-  searchParams: { projectId: string };
-}) {
-  await getProjects(searchParams.projectId);
+async function AppPage({ params }: { params: { projectId: string } }) {
+  await getProjectsFromApp(params.projectId);
   return <div>No Projects yet! Create now!</div>;
 }
 
