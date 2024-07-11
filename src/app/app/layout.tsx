@@ -19,11 +19,11 @@ export default async function Layout({
   }
 
   return (
-    <>
+    <div className='h-screen w-screen flex flex-col items-center'>
       <Header user={user} />
-      <main className='sticky top-0 bg-background text-foreground w-screen h-screen'>
+      <main className='flex-1 bg-background text-foreground w-full pt-4 pb-4 max-w-screen-xl'>
         {children}
       </main>
-    </>
+    </div>
   );
 }

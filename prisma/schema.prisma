@@ -21,8 +21,8 @@ model User {
 
 model Project {
   id        String     @id @default(uuid())
-  name      String     @unique
   userId    String
+  name      String     @unique
   feedbacks Feedback[]
 }
 

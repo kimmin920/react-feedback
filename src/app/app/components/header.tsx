@@ -15,7 +15,7 @@ async function Header({ user }: { user: User }) {
   const userMetadata = user.user_metadata as UserMetadata;
 
   return (
-    <header className='border-b w-full'>
+    <header className='sticky border-b w-full'>
       <div className='flex h-16 items-center px-4'>
         <div className='space-x-4 flex flex-row justify-center items-center'>
           <div className='font-bold'>Feedback.io</div>
