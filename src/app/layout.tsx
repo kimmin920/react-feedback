@@ -4,6 +4,7 @@ import './globals.css';
 
 import Header from '../components/ui/header';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import Providers from './providers';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -23,10 +24,11 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className='sticky top-0 bg-background text-foreground'>
-        {/* <Header /> */}
-        <TooltipProvider>
-          <main className='flex flex-col items-center'>{children}</main>
-        </TooltipProvider>
+        <Providers>
+          <TooltipProvider>
+            <main className='flex flex-col items-center'>{children}</main>
+          </TooltipProvider>
+        </Providers>
       </body>
     </html>
   );

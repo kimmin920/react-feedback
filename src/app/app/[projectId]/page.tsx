@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { redirect } from 'next/navigation';
 
 import React from 'react';
+import { putFeedback } from './actions';
 
 async function getProject(projectId: string) {
   const prisma = new PrismaClient();
@@ -26,7 +27,14 @@ async function ProjectDetailPage({
 }) {
   await getProject(params.projectId);
 
-  return <div>{params.projectId}</div>;
+  return (
+    <>
+      <form action={putFeedback}>
+        <input type='text' name='pid' id='pid' value={params.projectId}></input>
+        <button type='submit'>put</button>
+      </form>
+    </>
+  );
 }
 
 export default ProjectDetailPage;
