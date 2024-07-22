@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import Feedback, { FeedbackActionDesignType } from './components/feddback';
+import Feedback, { FeedbackActionDesignType } from './components/feedback';
 import {
   ResizableHandle,
   ResizablePanel,

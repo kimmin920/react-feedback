@@ -44,7 +44,7 @@ function FeedbackItem({
       await axios.post(`/api/feedbacks/${id}/archive`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['feedbacks']);
+      queryClient.invalidateQueries(['feedbacks'] as any);
     },
   });
 
@@ -53,7 +53,7 @@ function FeedbackItem({
       await axios.post(`/api/feedbacks/${id}/unarchive`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['feedbacks']);
+      queryClient.invalidateQueries(['feedbacks'] as any);
     },
   });
 
@@ -62,7 +62,7 @@ function FeedbackItem({
       await axios.delete(`/api/feedbacks/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['feedbacks']);
+      queryClient.invalidateQueries(['feedbacks'] as any);
     },
   });
 
