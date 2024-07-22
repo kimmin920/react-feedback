@@ -3,7 +3,7 @@
 import React from 'react';
 import FeedbackActionsFaces from './feedback-actions-faces';
 import FeedbackActionsStars from './feedback-acions-stars';
-import { FeedbackActionDesignType } from './feddback';
+import { FeedbackActionDesignType } from './feedback';
 
 function FeedbackActionsMatcher({ type }: { type: FeedbackActionDesignType }) {
   switch (type) {

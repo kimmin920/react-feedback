@@ -13,9 +13,12 @@ import FailIcon from './fail-icon';
 import FeedbackActionsMatcher from './feedback-actions-matcher';
 import ScreenshotButton from '@/components/screenshot-button';
 
+import { createClient } from '@utils/supabase/client';
+
 type FormStatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
 export type FeedbackEditorType = {
+  projectId: string;
   designConfig: {
     actions: 'FACE' | 'STAR';
   };
@@ -29,7 +32,11 @@ export type FeedbackEditorType = {
 export type FeedbackActionDesignType =
   FeedbackEditorType['designConfig']['actions'];
 
-function Feedback({ designConfig, customTexts }: FeedbackEditorType) {
+function Feedback({
+  projectId,
+  designConfig,
+  customTexts,
+}: FeedbackEditorType) {
   const [status, setStatus] = useState<FormStatusType>('PENDING');
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -38,21 +45,30 @@ function Feedback({ designConfig, customTexts }: FeedbackEditorType) {
     setStatus('LOADING');
 
     const formData = new FormData(e.currentTarget);
-    const feedback = formData.get('feedback');
+    const content = formData.get('feedback') as string;
 
     try {
-      const response = await fetch('/api/submit-feedback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ feedback }),
-      });
+      const supabase = createClient();
 
-      if (response.ok) {
+      const { data, error } = await supabase
+        .from('Feedback')
+        .insert([
+          {
+            projectId,
+            content: 'this-is content',
+            rate: 1,
+            imageSrc: 'image-src',
+            device: 'mac',
+            type: 'ISSUE',
+          },
+        ])
+        .select();
+
+      if (data) {
         setStatus('SUCCESS');
       } else {
         setStatus('FAILED');
+        console.error('Failed to submit feedback:', error);
       }
     } catch (error) {
       console.error('Failed to submit feedback:', error);

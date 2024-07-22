@@ -2,10 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from './ui/button';
 import { Camera, CircleAlert, LoaderCircle, XIcon } from 'lucide-react';
-import Image from 'next/image';
-import { SupabaseClient } from '@supabase/supabase-js';
-import { createClient } from '@utils/supabase/client';
 import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@utils/supabase/client';
 
 type StatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
@@ -75,7 +73,7 @@ function ScreenshotButton() {
         />
 
         <a target='_blank' href={img} rel='noopener noreferrer'>
-          <Image
+          <img
             src={img}
             alt='screen-shot'
             width={50}
