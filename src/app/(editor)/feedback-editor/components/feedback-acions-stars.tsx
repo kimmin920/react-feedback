@@ -6,9 +6,15 @@ import clsx from 'clsx';
 import { Star } from 'lucide-react';
 import { useFormState } from 'react-dom';
 import { RadioGroup } from '@/components/ui/radio-group';
+import { useFormContext } from 'react-hook-form';
 
 function FeedbackActionsStars() {
   const [value, setValue] = useState(5);
+
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   const onChange: React.FormEventHandler<HTMLInputElement> = (e) => {
     const target = e.target as HTMLInputElement;
@@ -23,9 +29,9 @@ function FeedbackActionsStars() {
           {['1', '2', '3', '4', '5'].map((each) => (
             <Fragment key={each}>
               <input
-                name='feedback-action'
+                {...register('rate')} // Register the input with 'rate'
                 type='radio'
-                value={each}
+                value={each} // Set value to match numeric rating
                 id={each}
                 hidden
               />

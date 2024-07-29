@@ -1,15 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+/* eslint-disable @next/next/no-img-element */
+import React, { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from './ui/button';
 import { Camera, CircleAlert, LoaderCircle, XIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@utils/supabase/client';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { FeedbackData } from '@/app/(editor)/feedback-editor/components/main-feedback';
 
 type StatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
 function ScreenshotButton() {
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<FeedbackData>();
+
   const [status, setStatus] = useState<StatusType>('PENDING');
-  const [img, setImg] = useState('');
+  const imgSrc = watch('imageSrc');
 
   const takeScreenshot = async () => {
     if (status === 'LOADING') {
@@ -19,13 +28,15 @@ function ScreenshotButton() {
     setStatus('LOADING');
 
     try {
-      const canvas = await html2canvas(document.querySelector('main')!);
+      const target = window.parent
+        ? window.parent.document.body
+        : document.body;
+
+      const canvas = await html2canvas(target);
       const imgData = canvas.toDataURL('image/png');
 
       const base64Data = imgData.split(',')[1]; // Remove data URL part if present
       const blob = base64ToBlob(base64Data, 'image/png');
-
-      setImg(imgData);
 
       const supabase = createClient();
 
@@ -48,8 +59,7 @@ function ScreenshotButton() {
         return;
       }
 
-      setImg(data.publicUrl);
-
+      setValue('imageSrc', data.publicUrl);
       setStatus('SUCCESS');
     } catch (error) {
       console.error(error);
@@ -59,7 +69,7 @@ function ScreenshotButton() {
 
   const onClickDeleteImage: React.MouseEventHandler<SVGSVGElement> = (e) => {
     e.stopPropagation();
-    setImg('');
+    setValue('imageSrc', '');
     setStatus('PENDING');
   };
 
@@ -72,9 +82,9 @@ function ScreenshotButton() {
           onClick={onClickDeleteImage}
         />
 
-        <a target='_blank' href={img} rel='noopener noreferrer'>
+        <a target='_blank' href={imgSrc ?? ''} rel='noopener noreferrer'>
           <img
-            src={img}
+            src={imgSrc ?? ''}
             alt='screen-shot'
             width={50}
             height={50}

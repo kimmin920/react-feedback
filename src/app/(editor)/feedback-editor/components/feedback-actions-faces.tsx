@@ -7,94 +7,95 @@ import FaceFantastic from '@/components/icons/face-fantastic';
 import FaceNormal from '@/components/icons/face-normal';
 import FaceSad from '@/components/icons/face-sad';
 import FaceCry from '@/components/icons/face-cry';
+import { useFormContext } from 'react-hook-form';
 
 function FeedbackActionsFaces() {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext(); // Destructure register from useFormContext
+
   return (
-    <div className='flex '>
-      <>
+    <div className='flex'>
+      <div>
         <input
-          name='feedback-action'
+          {...register('rate')} // Register the input with 'rate'
           type='radio'
-          className='peer/5'
-          value='five'
-          id='five'
-          hidden
+          value='5' // Set value to match numeric rating
+          id='five' // Provide an id for the label
+          className='peer hidden' // Hide the default radio button
         />
         <RadioLabel
           htmlFor='five'
-          className='peer-checked/5:text-sky-600 peer-checked/5:bg-sky-100'
+          className='peer-checked:text-sky-600 peer-checked:bg-sky-100'
         >
           <FaceFantastic />
         </RadioLabel>
-      </>
+      </div>
 
-      <>
+      <div>
         <input
-          name='feedback-action'
+          {...register('rate')} // Register the input with 'rate'
           type='radio'
-          className='peer/4'
-          value='four'
+          value='4' // Set value to match numeric rating
           id='four'
-          hidden
+          className='peer hidden'
         />
         <RadioLabel
           htmlFor='four'
-          className='peer-checked/4:text-sky-600 peer-checked/4:bg-sky-100'
+          className='peer-checked:text-sky-600 peer-checked:bg-sky-100'
         >
           <FaceNormal />
         </RadioLabel>
-      </>
+      </div>
 
-      <>
-        {/* <input
-          name='feedback-action'
+      <div>
+        <input
+          {...register('rate')} // Register the input with 'rate'
           type='radio'
-          className='peer/3'
-          value='three'
+          value='3' // Set value to match numeric rating
           id='three'
-          hidden
+          className='peer hidden'
         />
         <RadioLabel
           htmlFor='three'
-          className='peer-checked/3:text-sky-600 peer-checked/3:bg-sky-100'
+          className='peer-checked:text-sky-600 peer-checked:bg-sky-100'
         >
           <FaceSad />
-        </RadioLabel> */}
-      </>
+        </RadioLabel>
+      </div>
 
-      <>
+      <div>
         <input
-          name='feedback-action'
+          {...register('rate')} // Register the input with 'rate'
           type='radio'
-          className='peer/2'
-          value='two'
+          value='2' // Set value to match numeric rating
           id='two'
-          hidden
+          className='peer hidden'
         />
         <RadioLabel
           htmlFor='two'
-          className='peer-checked/2:text-sky-600 peer-checked/2:bg-sky-100'
+          className='peer-checked:text-sky-600 peer-checked:bg-sky-100'
         >
           <FaceSad />
         </RadioLabel>
-      </>
+      </div>
 
-      <>
+      <div>
         <input
-          name='feedback-action'
+          {...register('rate')} // Register the input with 'rate'
           type='radio'
-          className='peer/1'
-          value='one'
+          value='1' // Set value to match numeric rating
           id='one'
-          hidden
+          className='peer hidden'
         />
         <RadioLabel
           htmlFor='one'
-          className='peer-checked/1:text-sky-600 peer-checked/1:bg-sky-100'
+          className='peer-checked:text-sky-600 peer-checked:bg-sky-100'
         >
           <FaceCry />
         </RadioLabel>
-      </>
+      </div>
     </div>
   );
 }
@@ -112,7 +113,7 @@ function RadioLabel({
     <Label
       htmlFor={htmlFor}
       className={clsx(
-        'rounded-full w-[32px] h-[32px] p-0 text-zinc-500 hover:text-sky-600 hover:fill-sky-600 hover:bg-accent flex justify-center items-center hover:cursor-pointer',
+        'rounded-full w-[32px] h-[32px] p-0 text-zinc-500 hover:text-sky-600 hover:bg-accent flex justify-center items-center hover:cursor-pointer',
         className
       )}
     >
@@ -120,4 +121,5 @@ function RadioLabel({
     </Label>
   );
 }
+
 export default FeedbackActionsFaces;

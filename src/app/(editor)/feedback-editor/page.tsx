@@ -1,7 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
-import Feedback, { FeedbackActionDesignType } from './components/feedback';
+import HumbpackFeedback from './components/humpback-feedback';
 import {
   ResizableHandle,
   ResizablePanel,
@@ -28,7 +28,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import FeedbackOrca from './components/feedback-orca';
+import OrcaFeedback from './components/orca-feedback';
+import MainFeedback, {
+  FeedbackActionDesignType,
+  FeedbackDesignType,
+} from './components/main-feedback';
 
 // Define the schema using zod
 const formSchema = z.object({
@@ -73,9 +77,9 @@ export default function FeedbackEditorPage() {
   const popupButtonTitle = watch('popupButtonTitle');
   const textAreaPlaceholder = watch('textAreaPlaceholder');
   const submitButtonTitle = watch('submitButtonTitle');
-  const [design, setDesign] = useState<'ORCA' | 'HUMPBACK'>('ORCA');
+  const [design, setDesign] = useState<FeedbackDesignType>('ORCA');
 
-  const onChangeDesign = (value: 'ORCA' | 'HUMPBACK') => {
+  const onChangeDesign = (value: FeedbackDesignType) => {
     setDesign(value);
   };
 
@@ -171,31 +175,19 @@ export default function FeedbackEditorPage() {
       >
         <ThemeWrapper>
           <div className='flex h-full items-center justify-center p-6'>
-            {design === 'HUMPBACK' && (
-              <Feedback
-                designConfig={{
-                  actions: actionDesignType,
-                }}
-                customTexts={{
-                  popupButtonTitle,
-                  submitButtonTitle,
-                  textAreaPlaceholder,
-                }}
-              />
-            )}
-
-            {design === 'ORCA' && (
-              <FeedbackOrca
-                designConfig={{
-                  actions: actionDesignType,
-                }}
-                customTexts={{
-                  popupButtonTitle,
-                  submitButtonTitle,
-                  textAreaPlaceholder,
-                }}
-              />
-            )}
+            <MainFeedback
+              designConfig={{
+                type: design,
+                actions: actionDesignType,
+              }}
+              customTexts={{
+                popupButtonTitle,
+                submitButtonTitle,
+                textAreaPlaceholder,
+              }}
+              projectId={'beec733b-6e91-41f4-ba91-0a77354d8532'}
+              defaultOpen={true}
+            />
           </div>
         </ThemeWrapper>
       </ResizablePanel>

@@ -1,39 +1,74 @@
-import Feedback from '@/app/(editor)/feedback-editor/components/feedback';
+import MainFeedback, {
+  FeedbackActionDesignType,
+  FeedbackDesignType,
+} from '@/app/(editor)/feedback-editor/components/main-feedback';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import '@/app/feedback-button.css';
 
-const FeedbackButton: React.FC<{ pid: string }> = ({ pid }) => {
-  return (
-    <Feedback
-      projectId={pid}
-      designConfig={{
-        actions: 'FACE',
-      }}
-      customTexts={{
-        popupButtonTitle: 'give us feedback!',
-        submitButtonTitle: 'submit!',
-        textAreaPlaceholder: 'feedback...',
-      }}
-    />
-  );
-};
+const validRateDesignTypes: FeedbackActionDesignType[] = ['FACE', 'STAR'];
+const validFeedbackDesignType: FeedbackDesignType[] = ['HUMPBACK', 'ORCA'];
 
-// 전역 변수로 노출
-(window as any).FeedbackButton = FeedbackButton;
-
-// DOM에 렌더링하는 함수
-function renderFeedbackButton(containerId: string) {
-  const container = document.getElementById(containerId);
+function renderFeedbackButton(container: HTMLElement) {
   const pid = container?.dataset.projectId ?? '';
-  console.log(pid);
+  const designType = container?.dataset.designType ?? 'HUMPBACK';
+  const rateDesignType = container?.dataset.rateDesignType ?? 'FACE';
+
+  if (!pid) {
+    console.error(`Invalid project-id: Expected correct data-project-id`);
+    return;
+  }
+
+  if (!validFeedbackDesignType.includes(designType as any)) {
+    console.error(
+      `Invalid design type: ${rateDesignType}. Expected 'FACE' or 'STAR'.`
+    );
+    return;
+  }
+
+  if (!validRateDesignTypes.includes(rateDesignType as any)) {
+    console.error(
+      `Invalid design type: ${rateDesignType}. Expected 'FACE' or 'STAR'.`
+    );
+    return;
+  }
+
+  const popupButtonTitle = container?.dataset.popupButtonTitle ?? 'Feedback';
+  const submitButtonTitle = container?.dataset.submitButtonTitle ?? 'Submit';
+  const textAreaPlaceholder =
+    container?.dataset.placeHolder ?? 'feedback here...';
+
   if (container) {
     const root = createRoot(container);
-    root.render(<FeedbackButton pid={pid} />);
+    root.render(
+      <MainFeedback
+        defaultOpen={false}
+        projectId={pid}
+        designConfig={{
+          type: designType as FeedbackDesignType,
+          actions: rateDesignType as FeedbackActionDesignType,
+        }}
+        customTexts={{
+          popupButtonTitle,
+          submitButtonTitle,
+          textAreaPlaceholder,
+        }}
+      />
+    );
   }
 }
 
-// 전역 함수로 노출
-(window as any).renderFeedbackButton = renderFeedbackButton;
+window.addEventListener('load', () => {
+  const container = document.getElementById('feedback-io');
 
-export default FeedbackButton;
+  if (!container) {
+    console.error(
+      "feedback-io Not Found: Expected element with 'id=feedback-io'"
+    );
+    return;
+  }
+
+  renderFeedbackButton(container);
+});
+
+export default MainFeedback;
