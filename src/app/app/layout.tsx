@@ -1,6 +1,7 @@
 import { createClient } from '@utils/supabase/server';
 import Header from './components/header';
 import ProjectSwitcher from './components/project-switcher';
+import { redirect } from 'next/navigation';
 
 export default async function Layout({
   children,
@@ -15,7 +16,7 @@ export default async function Layout({
 
   if (!user) {
     // NOTE: must redirect to home
-    return <div>no-user</div>;
+    return redirect('/login');
   }
 
   return (

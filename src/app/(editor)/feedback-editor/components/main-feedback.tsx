@@ -7,7 +7,8 @@ import OrcaFeedback from './orca-feedback';
 import { createClient } from '@utils/supabase/client';
 import SuccessIcon from './success-icon';
 import FailIcon from './fail-icon';
-import deviceDetector from '../helpers';
+import { getCurrentUrlPath, deviceDetector } from '../helpers';
+import { Database } from '../../../../../database.types';
 
 const feedbackSchema = z.object({
   content: z.string().min(1).max(500),
@@ -67,7 +68,7 @@ function MainFeedback({
     setStatus('LOADING');
     try {
       const supabase = createClient();
-      const { content, rate, imageSrc, device, type } = formData;
+      const { content, rate, imageSrc, type } = formData;
 
       const { data, error } = await supabase
         .from('Feedback')
@@ -75,9 +76,10 @@ function MainFeedback({
           {
             projectId,
             content,
-            rate,
-            imageSrc,
+            rate: rate ? Number(rate) : null,
+            imageSrc: imageSrc ?? '',
             device: deviceDetector(),
+            pageUrl: getCurrentUrlPath(),
             type,
           },
         ])

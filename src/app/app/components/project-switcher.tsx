@@ -12,9 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
@@ -35,21 +33,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { createClient } from '@utils/supabase/client';
-import { revalidatePath } from 'next/cache';
-import {
-  redirect,
-  useParams,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { insertProject } from '../actions';
 
 type Project = {

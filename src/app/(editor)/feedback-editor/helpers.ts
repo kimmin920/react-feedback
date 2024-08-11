@@ -49,4 +49,12 @@ export const deviceDetector = () => {
   return `${model}, ${device}, ${os}`;
 };
 
-export default deviceDetector;
+export function getCurrentUrlPath() {
+  if (typeof window !== 'undefined') {
+    return (
+      window.location.pathname + window.location.search + window.location.hash
+    );
+  }
+
+  return 'N/A';
+}

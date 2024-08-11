@@ -25,7 +25,11 @@ async function ProjectDetailPage({
 }: {
   params: { projectId: string };
 }) {
-  await getProject(params.projectId);
+  const project = await getProject(params.projectId);
+
+  if (project) {
+    return redirect(`${project.id}/feedbacks`);
+  }
 
   return (
     <>

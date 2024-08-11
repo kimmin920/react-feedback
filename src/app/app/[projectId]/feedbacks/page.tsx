@@ -51,7 +51,7 @@ function DashboardPage({ params }: { params: { projectId: string } }) {
   const [limit, setLimit] = useState(10);
 
   const { data, isLoading, isError } = useQuery<FeedbackResponse, Error>({
-    queryKey: [filter, page, limit],
+    queryKey: [params.projectId, filter, page, limit],
     queryFn: () => fetchFeedbacks(params.projectId, page, limit, filter),
   });
 
