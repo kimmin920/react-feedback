@@ -1,14 +1,8 @@
-import { oAuthSignIn } from './actions';
 import { OauthButtons } from './oauth-signin';
 
 import Image from 'next/image';
-import Link from 'next/link';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-
-export function LoginPage() {
+function LoginPage() {
   return (
     <div className='h-screen w-full lg:grid lg:grid-cols-2'>
       <div className='flex items-center justify-center py-12'>
