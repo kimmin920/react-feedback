@@ -2,27 +2,28 @@ import React from 'react';
 import ProjectSwitcher from './project-switcher';
 import { UserNav } from '@/components/ui/user-nav';
 import { Separator } from '@/components/ui/separator';
-
 import { UserMetadata } from '@/app/profile/page';
 import { User } from '@supabase/supabase-js';
-import { PrismaClient } from '@prisma/client';
-import { redirect } from 'next/dist/server/api-utils';
 import { getProjects } from '../actions';
+import ProjectNavigations from './project-navigations';
+import Link from 'next/link';
 
 async function Header({ user }: { user: User }) {
-  const projects = await getProjects(user.id);
-
   const userMetadata = user.user_metadata as UserMetadata;
 
   return (
-    <header className='sticky border-b w-full'>
+    <header className='z-10 sticky top-0 border-b w-full backdrop-blur supports-[backdrop-filter]:bg-background/60'>
       <div className='flex h-16 items-center px-4'>
         <div className='space-x-4 flex flex-row justify-center items-center'>
-          <div className='font-bold'>Feedback.io</div>
+          <Link href='/'>
+            <div className='font-bold'>Feedback.space</div>
+          </Link>
           <Separator className='h-[20px]' orientation='vertical' />
-          <ProjectSwitcher projects={projects} userId={user!.id} />
+          {user.id && <ProjectSwitcher userId={user!.id} />}
         </div>
-        {/* <MainNav className='mx-6' /> */}
+
+        <ProjectNavigations />
+
         <div className='ml-auto flex items-center space-x-4'>
           <UserNav
             avatarUrl={userMetadata.avatar_url}

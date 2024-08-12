@@ -35,38 +35,47 @@ import {
 } from '@/components/ui/popover';
 import { useParams, useRouter } from 'next/navigation';
 import { insertProject } from '../actions';
-
-type Project = {
-  name: string;
-  id: string;
-};
-
-type Projects = Project[];
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { ProjectsResponse } from '@/app/api/projects/route';
+import { Project } from '@prisma/client';
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
 interface TeamSwitcherProps extends PopoverTriggerProps {
-  projects: Projects;
   userId: string;
 }
 
+const fetchProjects = async (userId: string) => {
+  const { data } = await axios.get<ProjectsResponse>('/api/projects', {
+    params: { userId },
+  });
+
+  return data;
+};
+
 export default function ProjectSwitcher({
-  projects,
   userId,
   className,
 }: TeamSwitcherProps) {
   const router = useRouter();
   const params = useParams();
 
+  const { data, isLoading, isError } = useQuery<ProjectsResponse, Error>({
+    queryKey: [userId],
+    queryFn: () => fetchProjects(userId),
+  });
+
+  const projects = data?.projects ?? [];
   const projectId = params.projectId;
 
   const [open, setOpen] = React.useState(false);
   const [showNewTeamDialog, setShowNewTeamDialog] = React.useState(false);
 
   const [selectedProject, setSelectedProject] = React.useState<Project | null>(
-    () => projects?.find((pj) => pj.id === projectId) ?? null
+    () => projects.find((pj) => pj.id === projectId) ?? null
   );
 
   React.useEffect(() => {
@@ -82,6 +91,32 @@ export default function ProjectSwitcher({
 
     setSelectedProject(project);
   }, [projects, projectId]);
+
+  if (isLoading) {
+    return (
+      <Button
+        disabled
+        variant='outline'
+        role='combobox'
+        aria-label='Select a team'
+        className={cn('w-[200px] justify-between', className)}
+      ></Button>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Button
+        disabled
+        variant='outline'
+        role='combobox'
+        aria-label='Select a team'
+        className={cn('w-[200px] justify-between', className)}
+      >
+        Error: fetching projects
+      </Button>
+    );
+  }
 
   return (
     <Dialog open={showNewTeamDialog} onOpenChange={setShowNewTeamDialog}>
@@ -117,7 +152,8 @@ export default function ProjectSwitcher({
           <Command>
             <CommandList>
               <CommandGroup>
-                {projects.length > 0 &&
+                {projects &&
+                  projects.length > 0 &&
                   projects.map((group) => (
                     <CommandItem
                       key={group.id}
