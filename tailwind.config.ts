@@ -68,10 +68,25 @@ const config = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        'slide-down': {
+          '0%': {
+            transform: 'translateY(-10px)',
+            opacity: '0',
+          },
+          '50%': {
+            transform: 'translateY(5px)',
+            opacity: '0.5',
+          },
+          to: {
+            transform: 'translateY(0)',
+            opacity: '1',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'slide-down': 'slide-down 2s ease-in-out infinite',
       },
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

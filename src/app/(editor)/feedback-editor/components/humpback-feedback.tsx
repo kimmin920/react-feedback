@@ -17,6 +17,7 @@ import { FeedbackComponentType, FeedbackEditorType } from './main-feedback';
 import { Form, useFormContext } from 'react-hook-form';
 
 function HumbpackFeedback({
+  targetElementId,
   designConfig,
   customTexts,
   defaultOpen,
@@ -90,7 +91,7 @@ function HumbpackFeedback({
               <FeedbackActionsMatcher type={designConfig.actions} />
 
               <div className='flex space-x-2'>
-                <ScreenshotButton />
+                <ScreenshotButton targetElementId={targetElementId} />
                 <Button type='submit' className='justify-self-end'>
                   {customTexts.submitButtonTitle}
                 </Button>

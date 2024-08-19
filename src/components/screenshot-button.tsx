@@ -1,16 +1,15 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from './ui/button';
 import { Camera, CircleAlert, LoaderCircle, XIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { createClient } from '@utils/supabase/client';
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FeedbackData } from '@/app/(editor)/feedback-editor/components/main-feedback';
 
 type StatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
-function ScreenshotButton() {
+function ScreenshotButton({ targetElementId }: { targetElementId?: string }) {
   const {
     setValue,
     watch,
@@ -28,11 +27,30 @@ function ScreenshotButton() {
     setStatus('LOADING');
 
     try {
-      const target = window.parent
-        ? window.parent.document.body
+      const target = targetElementId
+        ? document.getElementById(targetElementId)
         : document.body;
 
-      const canvas = await html2canvas(target);
+      const options = targetElementId
+        ? undefined
+        : {
+            x: window.scrollX,
+            y: window.scrollY,
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+          };
+
+      const style = document.createElement('style');
+
+      document.head.appendChild(style);
+
+      style.sheet?.insertRule(
+        'body > div:last-child img { display: inline-block; }'
+      );
+
+      const canvas = await html2canvas(target, options);
+      style.remove();
+
       const imgData = canvas.toDataURL('image/png');
 
       const base64Data = imgData.split(',')[1]; // Remove data URL part if present

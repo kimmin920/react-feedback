@@ -24,6 +24,7 @@ import { FeedbackComponentType, FeedbackEditorType } from './main-feedback';
 import { useFormContext } from 'react-hook-form';
 
 function OrcaFeedback({
+  targetElementId,
   designConfig,
   customTexts,
   defaultOpen,
@@ -177,7 +178,7 @@ function OrcaFeedback({
                   <FeedbackActionsMatcher type={designConfig.actions} />
 
                   <div className='flex space-x-2'>
-                    <ScreenshotButton />
+                    <ScreenshotButton targetElementId={targetElementId} />
                     <Button type='submit' className='justify-self-end'>
                       {customTexts.submitButtonTitle}
                     </Button>

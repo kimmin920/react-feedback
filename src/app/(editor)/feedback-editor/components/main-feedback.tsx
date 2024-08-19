@@ -24,6 +24,7 @@ export type FeedbackDesignType = 'ORCA' | 'HUMPBACK';
 
 export type FeedbackEditorType = {
   projectId: string;
+  targetElementId?: string;
   defaultOpen: boolean;
   designConfig: {
     type: FeedbackDesignType;
@@ -47,6 +48,7 @@ type FormStatusType = 'PENDING' | 'LOADING' | 'SUCCESS' | 'FAILED';
 
 function MainFeedback({
   projectId,
+  targetElementId = 'body',
   designConfig,
   customTexts,
   defaultOpen,
@@ -135,6 +137,7 @@ function MainFeedback({
     <FormProvider {...methods}>
       {designConfig.type === 'HUMPBACK' && (
         <HumbpackFeedback
+          targetElementId={targetElementId}
           projectId={projectId}
           defaultOpen={defaultOpen}
           designConfig={designConfig}
@@ -145,6 +148,7 @@ function MainFeedback({
 
       {designConfig.type === 'ORCA' && (
         <OrcaFeedback
+          targetElementId={targetElementId}
           projectId={projectId}
           defaultOpen={defaultOpen}
           designConfig={designConfig}
