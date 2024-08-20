@@ -33,7 +33,7 @@ export default function HomePage() {
             <p className='mt-4 md:mt-6 text-[#707070] max-w-[600px] text-center'>
               Easily collect, manage, and customize user feedback with
               Feedback.space. Designed to streamline your feedback process, our
-              service lets you tailor the feedback component's design to
+              service lets you tailor the feedback component&apos;s design to
               perfectly match your brand.
             </p>
 

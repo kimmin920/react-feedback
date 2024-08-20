@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { Button } from './ui/button';

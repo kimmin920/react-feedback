@@ -1,7 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
-import HumbpackFeedback from './components/humpback-feedback';
+import {  useState } from 'react';
 import {
   ResizableHandle,
   ResizablePanel,

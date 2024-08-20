@@ -1,13 +1,9 @@
 'use server';
-
 import { redirect } from 'next/navigation';
-
 import { createClient } from '@utils/supabase/server';
 import { Provider } from '@supabase/supabase-js';
 import { getURL } from '@utils/helpers';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
 
 export async function oAuthSignIn(provider: Provider) {
   if (!provider) {
@@ -16,7 +12,7 @@ export async function oAuthSignIn(provider: Provider) {
 
   const supabase = createClient();
   const redirectUrl = getURL('/auth/callback');
-
+  console.log(redirectUrl)
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
@@ -27,7 +23,7 @@ export async function oAuthSignIn(provider: Provider) {
   if (error) {
     redirect('/login?message=Could not authenticate user');
   }
-
+  console.log('go-to-url', data.url)
   return redirect(data.url);
 }
 
