@@ -32,6 +32,10 @@ function ScreenshotButton({ targetElementId }: { targetElementId?: string }) {
         ? document.getElementById(targetElementId)
         : document.body;
 
+      if (!target) {
+        throw Error('target dom is not found');
+      }
+
       const options = targetElementId
         ? undefined
         : {
