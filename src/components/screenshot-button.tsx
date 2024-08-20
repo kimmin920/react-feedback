@@ -21,6 +21,10 @@ function ScreenshotButton({ targetElementId }: { targetElementId?: string }) {
   const imgSrc = watch('imageSrc');
 
   const takeScreenshot = async () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     if (status === 'LOADING') {
       return;
     }

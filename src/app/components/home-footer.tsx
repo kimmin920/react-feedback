@@ -12,7 +12,7 @@ function HomeFooter() {
           <li>
             <a
               className='hover:underline me-4 md:me-6'
-              href='https://github.com/PaoloJN/youtube-ai-extension'
+              href='https://github.com/'
             >
               Github
             </a>
@@ -20,13 +20,13 @@ function HomeFooter() {
           <li>
             <a
               className='hover:underline me-4 md:me-6'
-              href='https://github.com/PaoloJN/youtube-ai-extension'
+              href='https://github.com/'
             >
               License
             </a>
           </li>
           <li>
-            <a className='hover:underline' href='https://x.com/PaoloJNN'>
+            <a className='hover:underline' href='https://x.com/kimmin920'>
               Contact
             </a>
           </li>
@@ -34,7 +34,7 @@ function HomeFooter() {
 
         <ul className='flex space-x-4 items-center md:ml-5'>
           <li>
-            <a target='_blank' rel='noreferrer' href='https://x.com/PaoloJNN'>
+            <a target='_blank' rel='noreferrer' href='https://x.com/kimmin920'>
               <span className='sr-only'>Twitter</span>
               <svg
                 stroke='currentColor'
@@ -54,7 +54,7 @@ function HomeFooter() {
             <a
               target='_blank'
               rel='noreferrer'
-              href='https://github.com/PaoloJN'
+              href='https://github.com/'
             >
               <span className='sr-only'>Github</span>
               <svg
@@ -75,7 +75,7 @@ function HomeFooter() {
             <a
               target='_blank'
               rel='noreferrer'
-              href='https://www.linkedin.com/in/paolo-n-a82123225/'
+              href='https://www.linkedin.com/'
             >
               <span className='sr-only'>LinkedIn</span>
               <svg

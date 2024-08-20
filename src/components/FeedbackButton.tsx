@@ -58,17 +58,19 @@ function renderFeedbackButton(container: HTMLElement) {
   }
 }
 
-window.addEventListener('load', () => {
-  const container = document.getElementById('feedback-io');
-
-  if (!container) {
-    console.error(
-      "feedback-io Not Found: Expected element with 'id=feedback-io'"
-    );
-    return;
-  }
-
-  renderFeedbackButton(container);
-});
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    const container = document.getElementById('feedback-io');
+  
+    if (!container) {
+      console.error(
+        "feedback-io Not Found: Expected element with 'id=feedback-io'"
+      );
+      return;
+    }
+  
+    renderFeedbackButton(container);
+  });
+}
 
 export default MainFeedback;
