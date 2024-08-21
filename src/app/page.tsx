@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React from 'react';
 import { Cover } from '@/components/ui/cover';
 import HomeHeader from './components/home-header';
@@ -9,6 +9,7 @@ import { RocketIcon } from '@radix-ui/react-icons';
 import './style.css';
 import { DashboardExample } from '@/components/examples/dashboard';
 import { MockBrowser } from '@/components/ui/mock-browser';
+import Image from 'next/image';
 
 export default function HomePage() {
   return (
@@ -25,8 +26,15 @@ export default function HomePage() {
 
       <div className='flex-col w-full h-full flex justify-center items-center my-11'>
         <div className='w-full px-4 md:px-20'>
-          <div className='hero flex flex-col justify-center items-center py-16'>
+          <div className='hero flex flex-col justify-center items-center py-16 relative'>
             <h1 className='text-4xl md:text-4xl lg:text-6xl font-semibold max-w-7xl mx-auto text-center relative z-20 bg-clip-text text-transparent bg-gradient-to-b from-neutral-800 via-neutral-700 to-neutral-700 dark:from-neutral-800 dark:via-white dark:to-white'>
+              <Image
+                className='absolute -top-[80px] -left-[50px]'
+                src='/landing-images/hero-default-doodle-3.svg'
+                alt='svg'
+                width='150'
+                height='100'
+              />
               Build Products Loved by Users <br /> with{' '}
               <Cover className='bg-opacity-30'>Feedback.space</Cover>
             </h1>

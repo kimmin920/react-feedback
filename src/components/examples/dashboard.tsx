@@ -33,6 +33,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import MainFeedback from '../FeedbackButton';
+import Image from 'next/image';
 
 export function DashboardExample() {
   return (
@@ -138,20 +139,61 @@ export function DashboardExample() {
               />
             </div>
           </form>
-          <MainFeedback
-            projectId={''}
-            targetElementId='example-dashboard'
-            defaultOpen={false}
-            designConfig={{
-              type: 'HUMPBACK',
-              actions: 'FACE',
-            }}
-            customTexts={{
-              popupButtonTitle: 'Feedback',
-              submitButtonTitle: 'Submit',
-              textAreaPlaceholder: 'feedback please...',
-            }}
-          />
+
+          <div className='relative'>
+            {/* <Image
+              className='absolute -top-[128px] -right-full'
+              src='/landing-images/locations-doodle.svg'
+              alt='svg'
+              width='100'
+              height='100'
+            /> */}
+
+            <Image
+              className='absolute -top-[150px] -left-[100px] max-w-[200px]'
+              src='/landing-images/jobs-doodle.svg'
+              alt='svg'
+              width='300'
+              height='300'
+            />
+
+            {/* <Image
+              className='absolute -top-[90%] -left-8'
+              src='/landing-images/blog-doodle.svg'
+              alt='svg'
+              width='50'
+              height='50'
+            />
+            <Image
+              className='absolute -bottom-[90%] -right-8 rotate-180'
+              src='/landing-images/blog-doodle.svg'
+              alt='svg'
+              width='50'
+              height='50'
+            /> */}
+
+            {/* <Image
+              className='absolute top-[10px] -left-[70px]'
+              src='/landing-images/hero-home-doodle.svg'
+              alt='svg'
+              width='100'
+              height='100'
+            /> */}
+            <MainFeedback
+              projectId={''}
+              targetElementId='example-dashboard'
+              defaultOpen={false}
+              designConfig={{
+                type: 'HUMPBACK',
+                actions: 'FACE',
+              }}
+              customTexts={{
+                popupButtonTitle: 'Feedback',
+                submitButtonTitle: 'Submit',
+                textAreaPlaceholder: 'feedback please...',
+              }}
+            />
+          </div>
         </div>
       </header>
       <main className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8'>
